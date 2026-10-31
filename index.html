@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A surprise for you</title>
+<style>
+:root{--bg:#fff4e0;--ink:#2b1b3d;--pink:#ff4f8b;--sun:#ffb800;--teal:#14b8a6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#241338;--ink:#fff1d6}}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Fredoka","Trebuchet MS",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+main{padding:24px;position:relative;z-index:2}
+#start p{font-size:1.2rem;margin:0 0 28px;opacity:.8}
+button{font:inherit;font-weight:600;font-size:1.6rem;color:#fff;background:var(--pink);border:0;border-radius:999px;padding:18px 44px;cursor:pointer;box-shadow:0 6px 0 #c9326a;transition:transform .1s,box-shadow .1s}
+button:hover{transform:translateY(-2px)}
+button:active{transform:translateY(5px);box-shadow:0 1px 0 #c9326a}
+button:focus-visible{outline:4px solid var(--sun);outline-offset:4px}
+#msg{display:none}
+#msg h1{font-size:clamp(2.6rem,12vw,6rem);line-height:1.05;margin:0;color:var(--pink)}
+#msg p{font-size:clamp(1.1rem,4vw,1.6rem);margin:18px 0 0}
+#msg.show{display:block;animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+@media (prefers-reduced-motion: reduce){#msg.show{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<main>
+  <div id="start">
+    <p>You have a surprise waiting.</p>
+    <button id="btn" type="button">Click here</button>
+  </div>
+  <div id="msg" aria-live="polite">
+    <h1>Happy Birthday Petniiii!</h1>
+    <p>Wishing you a day full of joy, laughter and cake.</p>
+  </div>
+</main>
+<script>
+(function(){
+  var c=document.getElementById('c'),x=c.getContext('2d'),W,H,parts=[],running=false;
+  var colors=['#ff4f8b','#ffb800','#14b8a6','#6c5ce7','#ff7a45','#4cc9f0'];
+  function size(){var d=window.devicePixelRatio||1;W=c.width=innerWidth*d;H=c.height=innerHeight*d;x.setTransform(1,0,0,1,0,0)}
+  size();addEventListener('resize',size);
+  function burst(px,py,n,spread,speed){
+    var d=window.devicePixelRatio||1;
+    for(var i=0;i<n;i++){
+      var a=-Math.PI/2+(Math.random()-.5)*spread,s=(Math.random()*.6+.4)*speed*d;
+      parts.push({x:px*d,y:py*d,vx:Math.cos(a)*s,vy:Math.sin(a)*s,w:(Math.random()*8+5)*d,h:(Math.random()*5+3)*d,
+        r:Math.random()*6,vr:(Math.random()-.5)*.4,c:colors[Math.floor(Math.random()*colors.length)],life:0});
+    }
+  }
+  function loop(){
+    x.clearRect(0,0,W,H);
+    for(var i=parts.length-1;i>=0;i--){
+      var p=parts[i];p.vy+=.35*(window.devicePixelRatio||1);p.vx*=.99;p.vy*=.99;
+      p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.life++;
+      x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore();
+      if(p.y>H+40)parts.splice(i,1);
+    }
+    if(parts.length){requestAnimationFrame(loop)}else{running=false}
+  }
+  function go(){if(!running){running=true;requestAnimationFrame(loop)}}
+  function celebrate(){
+    var w=innerWidth,h=innerHeight;
+    burst(w*.1,h,110,1.1,26);burst(w*.9,h,110,1.1,26);
+    burst(w*.5,h*.9,90,1.6,24);
+    go();
+    var k=0,t=setInterval(function(){
+      burst(Math.random()*w,h*.85,50,1.4,22);go();
+      if(++k>=5)clearInterval(t);
+    },500);
+  }
+  document.getElementById('btn').addEventListener('click',function(){
+    document.getElementById('start').style.display='none';
+    document.getElementById('msg').className='show';
+    if(!matchMedia('(prefers-reduced-motion: reduce)').matches)celebrate();
+  });
+  document.getElementById('msg').addEventListener('click',function(){
+    if(!matchMedia('(prefers-reduced-motion: reduce)').matches)celebrate();
+  });
+})();
+</script>
+</body>
+</html>
