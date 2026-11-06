@@ -1,13 +1,14 @@
 <!DOCTYPE html>
+<meta charset="UTF-8">
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>A surprise for you</title>
 <style>
-:root{--bg:#fff4e0;--ink:#2b1b3d;--pink:#ff4f8b;--sun:#ffb800;--teal:#14b8a6;
+:root{--bg:#fff4e0;--ink:#2b1b3d;--pink:#5a0f2e;--sun:#ffb800;--teal:#14b8a6;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#241338;--ink:#fff1d6}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#FFC0CB;--ink:#000080 }}
 html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
 body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Fredoka","Trebuchet MS",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}
 main{padding:24px;position:relative;z-index:2}
@@ -17,15 +18,69 @@ button:hover{transform:translateY(-2px)}
 button:active{transform:translateY(5px);box-shadow:0 1px 0 #c9326a}
 button:focus-visible{outline:4px solid var(--sun);outline-offset:4px}
 #msg{display:none}
-#msg h1{font-size:clamp(2.6rem,12vw,6rem);line-height:1.05;margin:0;color:var(--pink)}
-#msg p{font-size:clamp(1.1rem,4vw,1.6rem);margin:18px 0 0}
+#msg h1{;line-height:1.05;margin:0;color:var(--pink)}
+#msg p{font-size:clamp(1.1rem,6vw,1.6rem);margin:18px 0 0}
 #msg.show{display:block;animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
 @keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
 canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
 @media (prefers-reduced-motion: reduce){#msg.show{animation:none}}
+.candle {
+  display: block;
+  margin: 20px auto;   /* centers it */
+  width: 180px;        /* adjust size */
+  max-width: 100%;
+}
+
 </style>
 </head>
+<style>
+    .balloon {
+  position: fixed;
+  top: 0;
+  width: 50px;
+  height: 190px;                       /* string length + balloon */
+  transform-origin: 50% 0;             /* swing from where the string is tied */
+  animation: sway 3.5s ease-in-out infinite alternate;
+  animation-delay: var(--d);
+  pointer-events: none;
+  z-index: 9;
+}
+
+/* the string */
+.balloon::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 125px;
+  background: #5a0f2e;
+}
+
+/* the balloon */
+.balloon::after {
+  content: "";
+  position: absolute;
+  top: 125px;
+  left: 0;
+  width: 50px;
+  height: 65px;
+  background: var(--c);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  box-shadow: inset -6px -6px 0 rgba(0, 0, 0, 0.12);
+}
+
+@keyframes sway {
+  from { transform: rotate(-7deg); }
+  to   { transform: rotate(7deg); }
+}
+  </style>
 <body>
+  <body>
+<div class="balloon" style="left: 4%;  --c: #ffd23f; --d: 0s"></div>
+<div class="balloon" style="left: 88%; --c: #2ec4b6; --d: -1.5s"></div>
+<div class="balloon" style="left: 15%; --c: #9b5de5; --d: -0.8s"></div>
+<div class="balloon" style="left: 76%; --c: #ff9f1c; --d: -2.2s"></div>
 <canvas id="c"></canvas>
 <main>
   <div id="start">
@@ -33,8 +88,10 @@ canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index
     <button id="btn" type="button">Click here</button>
   </div>
   <div id="msg" aria-live="polite">
-    <h1>Happy Birthday Petniiii!</h1>
-    <p>Wishing you a day full of joy, laughter and cake.</p>
+    <img src="candle.gif" alt="Burning candle" class="candle">
+    <h1>🎊🎈Happy Birthday Petniiii!🎉🥳</h1>
+    <p>Wishing you many happy returns of the day and best wishes.</p>
+	<p>Aroooo buri hoye geli 🤣🤣🤣 !!!!!!.</p>
   </div>
 </main>
 <script>
